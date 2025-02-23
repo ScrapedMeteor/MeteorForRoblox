@@ -1,1 +1,84 @@
+local UILibrary = {}
+
+local screenSize = game:GetService("Workspace").CurrentCamera.ViewportSize
+local categories = {}
+
+-- Create a new category
+function UILibrary.CreateCategory(name, position)
+    local category = {
+        Name = name,
+        Position = position,
+        Options = {},
+        Frame = Drawing.new("Square"),
+        Title = Drawing.new("Text")
+    }
+
+    -- Category background
+    category.Frame.Size = Vector2.new(150, 250)
+    category.Frame.Position = position
+    category.Frame.Color = Color3.fromRGB(60, 0, 120) -- Purple background
+    category.Frame.Filled = true
+    category.Frame.Visible = true
+
+    -- Title bar
+    category.Title.Text = name
+    category.Title.Position = Vector2.new(position.X + 5, position.Y + 5)
+    category.Title.Color = Color3.fromRGB(255, 255, 255)
+    category.Title.Size = 18
+    category.Title.Outline = true
+    category.Title.Visible = true
+
+    function category:AddOption(optionName, callback)
+        local option = {
+            Name = optionName,
+            Enabled = false,
+            ToggleBox = Drawing.new("Square"),
+            Label = Drawing.new("Text"),
+            Callback = callback or function() end
+        }
+
+        local index = #self.Options + 1
+        local yOffset = position.Y + 30 + (index * 20)
+
+        -- Option text
+        option.Label.Text = optionName
+        option.Label.Position = Vector2.new(position.X + 25, yOffset)
+        option.Label.Color = Color3.fromRGB(255, 255, 255)
+        option.Label.Size = 16
+        option.Label.Outline = true
+        option.Label.Visible = true
+
+        -- Toggle box
+        option.ToggleBox.Size = Vector2.new(15, 15)
+        option.ToggleBox.Position = Vector2.new(position.X + 5, yOffset + 2)
+        option.ToggleBox.Color = Color3.fromRGB(255, 0, 0) -- Red (off)
+        option.ToggleBox.Filled = true
+        option.ToggleBox.Visible = true
+
+        -- Toggle function
+        function option:Toggle()
+            self.Enabled = not self.Enabled
+            option.ToggleBox.Color = self.Enabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0) -- Green when ON
+            self.Callback(self.Enabled) -- Call the function
+        end
+
+        -- Detect clicks
+        game:GetService("UserInputService").InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                local mousePos = game:GetService("UserInputService"):GetMouseLocation()
+                if (mousePos.X >= option.ToggleBox.Position.X and mousePos.X <= option.ToggleBox.Position.X + 15) and
+                   (mousePos.Y >= option.ToggleBox.Position.Y and mousePos.Y <= option.ToggleBox.Position.Y + 15) then
+                    option:Toggle()
+                end
+            end
+        end)
+
+        table.insert(self.Options, option)
+    end
+
+    categories[#categories + 1] = category
+    return category
+end
+
+return UILibrary
 
