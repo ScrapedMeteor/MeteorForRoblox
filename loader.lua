@@ -8,7 +8,7 @@ if not isfolder(ConfigsFolder) then makeFolder(ConfigsFolder)
     
     if isfolder(MeteorFolder) and isfolder(ConfigsFolder) then
         if game.PlaceId = 6872274481 then
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScrapedMeteor/MeteorForRoblox/refs/heads/main/Games/bedwars.lua"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScrapedMeteor/MeteorForRoblox/refs/heads/main/Games/bedwars.lu"))()
         end
     end
 end
